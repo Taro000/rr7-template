@@ -1,0 +1,43 @@
+name: auto-fix-agent
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+
+jobs:
+  dispatch:
+    # エージェント作業ブランチ（claude/ 前置）の CI 失敗のみ対象
+    if: >-
+      github.event.workflow_run.conclusion == 'failure' &&
+      startsWith(github.event.workflow_run.head_branch, 'claude/')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      issues: read
+    steps:
+      - name: Count attempts and fire fix routine
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          FIRE_URL: ${{ secrets.ROUTINE_FIX_URL }}
+          FIRE_TOKEN: ${{ secrets.ROUTINE_FIX_TOKEN }}
+        run: |
+          owner="${GITHUB_REPOSITORY%%/*}"
+          pr_number=$(gh api "repos/$GITHUB_REPOSITORY/pulls?head=$owner:$BRANCH&state=open" \
+            --jq '.[0].number // empty')
+          if [ -z "$pr_number" ]; then
+            echo "open PR が無いためスキップ: $BRANCH"; exit 0
+          fi
+          # 「修正→失敗→修正」の無限ループで実行枠が溶けるのを防ぐ上限カウンタ
+          attempts=$(gh api "repos/$GITHUB_REPOSITORY/issues/$pr_number/comments" --paginate \
+            --jq '[.[] | select(.body | test("auto-fix attempt"))] | length')
+          if [ "$attempts" -ge 2 ]; then
+            echo "auto-fix 上限（$attempts 回）に達したためスキップ: PR #$pr_number"; exit 0
+          fi
+          jq -n --arg pr "$pr_number" --arg br "$BRANCH" --arg run "$RUN_URL" \
+            '{text: "PR #\($pr)（ブランチ \($br)）の CI が失敗しました。失敗した run: \($run)"}' |
+          curl -sS --fail-with-body -X POST "$FIRE_URL" \
+            -H "Authorization: Bearer $FIRE_TOKEN" \
+            -H "anthropic-beta: experimental-cc-routine-2026-04-01" \
+            -H "Content-Type: application/json" -d @-

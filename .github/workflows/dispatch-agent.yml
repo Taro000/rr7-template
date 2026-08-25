@@ -1,0 +1,35 @@
+name: dispatch-agent
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  dispatch:
+    if: github.event.label.name == 'ready for dev'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Fire implementation routine
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+          TITLE: ${{ github.event.issue.title }}
+          BODY: ${{ github.event.issue.body }}
+          FIRE_URL: ${{ secrets.ROUTINE_IMPL_URL }}
+          FIRE_TOKEN: ${{ secrets.ROUTINE_IMPL_TOKEN }}
+        run: |
+          # text は最大 65,536 文字。タイトル等の前置き分を見込んで本文を 60,000 文字で切る
+          payload=$(jq -n --arg n "$NUM" --arg t "$TITLE" --arg b "$BODY" \
+            '{text: "Issue #\($n): \($t)\n\n\($b[0:60000])"}')
+          response=$(echo "$payload" | curl -sS --fail-with-body -X POST "$FIRE_URL" \
+            -H "Authorization: Bearer $FIRE_TOKEN" \
+            -H "anthropic-beta: experimental-cc-routine-2026-04-01" \
+            -H "Content-Type: application/json" -d @-)
+          echo "$response"
+          # パイロット中の観測性のため、起動したセッション URL を issue に残す（失敗しても本体は成功扱い）
+          session_url=$(echo "$response" | jq -r '.claude_code_session_url // empty')
+          if [ -n "$session_url" ]; then
+            gh issue comment "$NUM" --repo "$GITHUB_REPOSITORY" \
+              --body "🤖 Claude Code セッションを起動しました: $session_url" || true
+          fi

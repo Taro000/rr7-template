@@ -1,0 +1,6 @@
+[tools]
+node = "24"
+
+[tasks.setup]
+description = "依存インストールと Husky フックの設定（.npmrc の ignore-scripts により prepare が自動実行されないため）"
+run = ["npm install", "npm run prepare"]

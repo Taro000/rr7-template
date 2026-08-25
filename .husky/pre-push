@@ -1,0 +1,10 @@
+# main への直 push 禁止（PR 経由でマージする）。緊急時のみ --no-verify で回避。
+# pre-push は stdin で "<local_ref> <local_sha> <remote_ref> <remote_sha>" を受け取る。
+protected="refs/heads/main"
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "$protected" ]; then
+    echo "✋ main への直接 push は禁止です。PR 経由でマージしてください（/create-pr）。" >&2
+    echo "   緊急回避: git push --no-verify" >&2
+    exit 1
+  fi
+done

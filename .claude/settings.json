@@ -1,0 +1,129 @@
+{
+  "permissions": {
+    "allow": [
+      "Glob(*)",
+      "Grep(*)",
+      "Bash(mkdir *)",
+      "Bash(touch *)",
+      "Bash(ls *)",
+      "Bash(tree *)",
+      "Bash(mv *)",
+      "Bash(cp *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(echo *)",
+      "Bash(npm *)",
+      "Write(*)",
+      "Bash(git add *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(source:*)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "WebSearch",
+      "mcp__claude_ai_Context7__resolve-library-id",
+      "mcp__claude_ai_Context7__query-docs"
+    ],
+    "deny": [
+      "Bash(git rebase *)",
+      "Bash(git commit --no-verify)",
+      "Bash(git push --no-verify)",
+      "Read(id_rsa)",
+      "Read(id_ed25519)",
+      "Read(**/*token*)",
+      "Read(**/*key*)",
+      "Bash(rm -rf *)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf /*)",
+      "Read(.env)",
+      "Read(.env.local)",
+      "Read(.env.development)",
+      "Read(.env.production)",
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.development)",
+      "Read(**/.env.production)",
+      "Read(**/*secret*)",
+      "Write(.env)",
+      "Write(.env.local)",
+      "Write(.env.development)",
+      "Write(.env.production)",
+      "Write(**/.env)",
+      "Write(**/.env.local)",
+      "Write(**/.env.development)",
+      "Write(**/.env.production)",
+      "Write(**/*secret*)",
+      "Write(.claude/settings.json)",
+      "Write(**/.claude/settings.json)",
+      "Edit(.claude/settings.json)",
+      "Edit(**/.claude/settings.json)",
+      "Write(.claude/settings.local.json)",
+      "Write(**/.claude/settings.local.json)",
+      "Edit(.claude/settings.local.json)",
+      "Edit(**/.claude/settings.local.json)"
+    ],
+    "ask": [
+      "Bash(rm *)",
+      "Bash(chmod *)",
+      "Bash(wget *)",
+      "Bash(curl *)",
+      "Bash(sudo *)",
+      "Bash(git reset *)",
+      "Write(oxlint.config.ts)",
+      "Write(**/oxlint.config.ts)",
+      "Edit(oxlint.config.ts)",
+      "Edit(**/oxlint.config.ts)",
+      "Write(.editorconfig)",
+      "Write(**/.editorconfig)",
+      "Edit(.editorconfig)",
+      "Edit(**/.editorconfig)",
+      "Write(tsconfig.json)",
+      "Write(**/tsconfig.json)",
+      "Edit(tsconfig.json)",
+      "Edit(**/tsconfig.json)"
+    ],
+    "defaultMode": "auto"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/tdd-test-guard.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/stop-format-lint-typecheck.sh\"",
+            "timeout": 180,
+            "statusMessage": "編集ファイルを format/lint/型チェック中…"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "context7@claude-plugins-official": true
+  }
+}

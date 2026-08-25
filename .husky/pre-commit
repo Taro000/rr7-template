@@ -1,0 +1,15 @@
+set -e
+
+# main への直コミット禁止（作業ブランチで作業する）。緊急時のみ --no-verify で回避。
+branch="$(git symbolic-ref --short HEAD 2>/dev/null || true)"
+if [ "$branch" = "main" ]; then
+  echo "✋ main への直接コミットは禁止です。作業ブランチを切ってください（/create-branch）。" >&2
+  echo "   緊急回避: git commit --no-verify" >&2
+  exit 1
+fi
+
+npm run format:check
+npm run lint
+npm run typecheck
+npm run knip
+npm test

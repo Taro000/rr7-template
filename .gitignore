@@ -1,0 +1,34 @@
+node_modules
+.DS_Store
+.claude/settings.local.json
+
+# Build outputs
+build
+dist
+.cache
+.react-router
+
+# Storybook
+storybook-static
+
+# Playwright
+.playwright
+.playwright-cli
+
+# Test coverage
+coverage
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+*.log
+
+# TDD テストガード（worktree ローカルのロック台帳・コミットしない）
+.tdd-lock

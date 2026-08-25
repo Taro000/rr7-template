@@ -1,0 +1,28 @@
+name: "技術タスク"
+description: "親PBIを持たない単独の技術作業（基盤・リファクタ・ツール整備など）。"
+labels: ["tech"]
+body:
+  - type: textarea
+    id: what-why
+    attributes:
+      label: 何を・なぜ（What・Why）
+      description: "何をやるか + なぜ必要か（技術的背景でよい）。"
+    validations:
+      required: true
+  - type: textarea
+    id: how
+    attributes:
+      label: 実装方針（How）
+      description: "どう実装するか。"
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 受け入れ条件
+      description: "技術観点を含めてよい。満たせたら閉じる条件。- [ ] でチェックリスト化する。"
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true

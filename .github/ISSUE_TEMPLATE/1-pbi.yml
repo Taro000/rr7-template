@@ -1,0 +1,32 @@
+name: "PBI（ユーザーストーリー）"
+description: "ユーザー価値の単位。ユーザーストーリーで表せるもの。"
+labels: ["PBI"]
+body:
+  - type: markdown
+    attributes:
+      value: "タイトルはストーリーの要約を書く（例: セッションを保存したい）。"
+  - type: textarea
+    id: user-story
+    attributes:
+      label: ユーザーストーリー
+      description: "「〜として、〜したい。なぜなら〜だから。」の完形で書く。"
+      placeholder: "（ログイン中のユーザー）として、（セッションを保存）したい。なぜなら（後で再開したい）から。"
+    validations:
+      required: true
+  - type: textarea
+    id: what-why
+    attributes:
+      label: 何を・なぜ（What・Why）
+      description: "ストーリーに収まらない背景・スコープ・対象範囲を補う。ストーリーの再掲はしない。"
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 受け入れ条件
+      description: "ユーザー目線で書く。技術観点（実装手段・内部構造）は書かない。- [ ] でチェックリスト化する。"
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
