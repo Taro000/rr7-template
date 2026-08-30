@@ -2,8 +2,9 @@
 
 このファイルは、本リポジトリのコードを扱う際の Claude Code（claude.ai/code）向けのガイダンスを提供する。
 
-> このリポジトリは **React Router v7 のプロジェクトテンプレート**（`rr7-template`）。clone して
-> 新規プロジェクトを始めるための土台であり、`app/routes/home.tsx` と `app/components/counter.tsx` は
+> このリポジトリは **React Router v7 のプロジェクトテンプレート**（`rr7-template`）で、GitHub の
+> template repository として設定されている。**直接 clone するのではなく「Use this template」で
+> 新しいリポジトリを生成して**使う土台であり、`app/routes/home.tsx` と `app/components/counter.tsx` は
 > 「このパターンで書く」ことを示すサンプル。実プロジェクトでは差し替える（→ `README.md`）。
 
 ## ルールとスキル
@@ -35,8 +36,8 @@
 | `playwright-cli`              | ブラウザ操作・E2E を確認する                                  | 自動                 |
 
 > 外部スキル（`daisyui` / `react-router-framework-mode` / `vercel-react-best-practices` /
-> `playwright-cli`）は `npx skills` で取り込んだ実体をコミットしている。バージョンは `skills-lock.json`
-> で固定。更新方法は `README.md`。
+> `playwright-cli`）は実体をコミットしている。うち前 3 つは `npx skills` で取り込み `skills-lock.json`
+> でバージョン固定、`playwright-cli` は lock 管理外（手動更新）。更新方法は `README.md`。
 
 ## コマンド
 
@@ -56,7 +57,9 @@ Node 24 が必須（`mise` で管理 — `mise.toml`）。パッケージ関連�
 
 - `.husky/pre-commit`（main での commit 拒否）/ `.husky/pre-push`（main への push 拒否）。
 - 脱出口は `git commit --no-verify` / `git push --no-verify` のみ。GitHub 上の PR マージはフック対象外で正常に通る。
-- ローカルガードのみ（サーバ側 branch protection は private + 無料プランでは使えない）。
+- サーバ側 branch protection は**未設定**で、ガードはローカルフックのみ。Free プランで branch protection /
+  ruleset を張れるのは public リポジトリだけ（private は Pro 以上）なので、生成先の可視性とプランで判断する
+  （→ `docs/agents/claude-code-web-setup.md` の「6. ブランチ保護」）。
 
 ## ツール設定
 

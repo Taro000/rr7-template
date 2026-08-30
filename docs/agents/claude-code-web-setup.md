@@ -127,12 +127,14 @@ issue を 2〜3 件用意し、Web UI から上記プロンプトと同じ文面
 - テストが緑になるか / PR の品質
 - 1 タスクあたりのレート消費と Max 5x での並列耐性（初期想定 1〜2 並列、実測で調整）
 
-### 6. ブランチ保護（現状は不可 — 要判断）
+### 6. ブランチ保護（未設定 — 要判断）
 
-private リポジトリ + Free プランでは branch protection / required checks を設定できない。
-選択肢:
+Free プランで branch protection / ruleset / required checks を張れるのは **public リポジトリのみ**
+（private で使うには GitHub Pro 以上が必要）。テンプレート本体は public だが保護は未設定なので、
+テンプレートから生成したリポジトリでも保護は付いてこない。選択肢:
 
-1. **public にする、または GitHub Pro 以上へ上げる** — protected branches と required checks が使える。
+1. **public で運用する、または GitHub Pro 以上へ上げる** — protected branches と required checks が使える。
+   張るなら `ci.yml` の `test` job を required check にし、main への直 push を禁止する。
 2. **ローカルガードのみで運用する** — `.husky/pre-push` が main への直 push を拒否し、エージェントは
    PR を作るだけでマージしない。マージ前に CI の緑を人が目視確認する運用でも品質ゲートは機能する。
 
