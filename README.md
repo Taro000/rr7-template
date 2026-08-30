@@ -1,12 +1,32 @@
 # rr7-template
 
-React Router v7（framework mode / SSR）のプロジェクトテンプレート。**clone して即開発を始める**ための土台。
+React Router v7（framework mode / SSR）のプロジェクトテンプレート。GitHub の
+**「Use this template」で新しいリポジトリを作り、そこから開発を始める**ための土台。
 
 型・lint・テスト・Storybook・雛形生成・Git フック・CI・Claude Code の規約とスキルまでを最初から揃えてある。
 
 ## セットアップ
 
-Node 24 を [mise](https://mise.jdx.dev/) で管理している（`mise.toml`）。初回は次を実行する。
+### 1. テンプレートから新しいリポジトリを作る
+
+**このリポジトリを直接 clone しない。** `origin` がテンプレート本体を指したままになり、
+自プロジェクトのコミットをテンプレートへ push する事故になる。GitHub 上で
+**Use this template → Create a new repository**、または:
+
+```sh
+# 可視性は --private / --public のどちらか（Free プランのブランチ保護は public のみ → 後述）
+gh repo create <owner>/<新プロジェクト名> --template Taro000/rr7-template --private --clone
+```
+
+生成されるのは**コミット 1 本の新しいリポジトリ**。ファイル（`.github/` や `.claude/` を含む）は
+すべて入るが、テンプレート側の**コミット履歴・issue・PR・secrets・Projects・ブランチ保護は入らない**。
+ラベルも既定のものだけなので `ready` / `ready for dev` は自分で作る（→「テンプレートから作った後にやること」）。
+fork ではないため upstream 関係も残らず、**テンプレート側の更新は自動では降りてこない**。
+
+### 2. 開発環境を用意する
+
+Node 24 を [mise](https://mise.jdx.dev/) で管理している（`mise.toml`）。生成したリポジトリを
+clone したら次を実行する。
 
 ```sh
 mise trust        # clone 直後は mise.toml が未信頼なので最初に実行する
@@ -17,6 +37,8 @@ mise run setup    # npm install + Husky フック設定
 `.npmrc` の `ignore-scripts=true`（サプライチェーン攻撃対策）により、`npm install` 単体では
 Husky の pre-commit フックが設定されない。**初回セットアップは必ず `mise run setup` を使うこと。**
 npm は 11.10 以上が必要（`engines` + `engine-strict` で強制。古い npm では install が失敗する）。
+
+### 3. 日常的に使うコマンド
 
 ```sh
 npm run dev       # 開発サーバ（HMR・SSR）→ http://localhost:5173
@@ -106,13 +128,14 @@ npm run gen -- route --route dashboard --name UserCard
 - **テストタイトル（`describe` / `it`）は日本語**（lint で機械強制）
 - ロジックは C0/C1 100% 目標、UI はブラックボックス（role / label クエリ、内部 state に触れない）
 
-## clone 後にやること
+## テンプレートから作った後にやること
 
 1. **`package.json` の `name`** を自プロジェクト名に変更する
 2. **`app/routes/home.tsx` と `app/root.tsx`** の文言・meta を差し替える
    （`app/components/counter.tsx` はサンプル。不要なら spec / stories ごと削除する）
-3. **`CLAUDE.md` 冒頭**のテンプレート説明ブロックを、自プロジェクトの説明に書き換える
-4. **GitHub 運用を使う場合**: 次の 2 つのラベルを作る。
+3. **`README.md`（このファイル）と `CLAUDE.md` 冒頭**のテンプレート説明を、自プロジェクトの説明に書き換える
+   （テンプレート自体の説明が残っていると、人も AI も「これはテンプレートだ」と読み違える）
+4. **GitHub 運用を使う場合**: 次の 2 つのラベルを作る（テンプレートからは引き継がれない）。
    - `ready` — ローカルの `/issue-to-pr` 用
    - `ready for dev` — クラウド無人実行（`cloud-issue-to-pr`）用
      > **ラベルが 2 系統あるのは意図的**。同一にすると、ローカルで実装するつもりの issue でも
@@ -180,8 +203,8 @@ npm run gen -- route --route dashboard --name UserCard
 | `create-pr`                   | 作業ブランチを push し PR を作る                | `/create-pr`         |
 | `commit`                      | ステージ済み変更をコミットする                  | `/commit`            |
 
-後半4スキル（`daisyui` / `react-router-framework-mode` / `vercel-react-best-practices` / `playwright-cli`）は
-外部由来。実体をコミットしてあるので clone 後すぐ使えるが、**上流の更新は自動では入らない**。
+`daisyui` / `react-router-framework-mode` / `vercel-react-best-practices` / `playwright-cli` の 4 つは外部由来。
+実体をコミットしてあるのでテンプレートから作った直後に使えるが、**上流の更新は自動では入らない**。
 更新するときは次を実行して差分をコミットする（バージョンは `skills-lock.json` で固定）。
 
 ```sh
@@ -189,6 +212,9 @@ npx skills add saadeghi/daisyui -s daisyui -a claude-code -y
 npx skills add remix-run/agent-skills -s react-router-framework-mode -a claude-code -y
 npx skills add vercel-labs/agent-skills -s vercel-react-best-practices -a claude-code -y
 ```
+
+> `playwright-cli` だけは `skills-lock.json` の管理外（取り込み元が記録されていない）。
+> 更新するときは `.claude/skills/playwright-cli/` を手で入れ替える。
 
 ### 権限（`.claude/settings.json`）
 
@@ -206,6 +232,8 @@ npx skills add vercel-labs/agent-skills -s vercel-react-best-practices -a claude
 
 ## 既知の割り切り
 
+- **テンプレート更新の取り込み口がない。** GitHub template は fork と違い upstream 関係を持たないため、
+  テンプレート側の改善を後から取り込むには手で差分を当てるしかない（代わりに履歴が汚れない）。
 - **loader / action の実装例が入っていない。** サンプル画面はローカル state のみ。
   データ取得・更新を書くときは `react-router-framework-mode` スキルのドキュメントを読むこと。
 - **`app/testing/` が空。** 共通の render ヘルパーや API モック（msw 等）は必要になった時点で足す。
