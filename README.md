@@ -1,32 +1,28 @@
 # rr7-template
 
-React Router v7（framework mode / SSR）のプロジェクトテンプレート。GitHub の
-**「Use this template」で新しいリポジトリを作り、そこから開発を始める**ための土台。
-
+React Router v7（framework mode / SSR）のプロジェクトテンプレート。
 型・lint・テスト・Storybook・雛形生成・Git フック・CI・Claude Code の規約とスキルまでを最初から揃えてある。
 
 ## セットアップ
 
 ### 1. テンプレートから新しいリポジトリを作る
 
-**このリポジトリを直接 clone しない。** `origin` がテンプレート本体を指したままになり、
-自プロジェクトのコミットをテンプレートへ push する事故になる。GitHub 上で
-**Use this template → Create a new repository**、または:
+**このリポジトリを直接 clone しない。** 。
+GitHub 上で**Use this template → Create a new repository**、または以下を実行。
 
 ```sh
 # 可視性は --private / --public のどちらか（Free プランのブランチ保護は public のみ → 後述）
 gh repo create <owner>/<新プロジェクト名> --template Taro000/rr7-template --private --clone
 ```
 
-生成されるのは**コミット 1 本の新しいリポジトリ**。ファイル（`.github/` や `.claude/` を含む）は
-すべて入るが、テンプレート側の**コミット履歴・issue・PR・secrets・Projects・ブランチ保護は入らない**。
+生成されるのは**コミット 1 本の新しいリポジトリ**。
+ファイル（`.github/` や `.claude/` を含む）はすべて入るが、テンプレート側の**コミット履歴・issue・PR・secrets・Projects・ブランチ保護は入らない**。
 ラベルも既定のものだけなので `ready` / `ready for dev` は自分で作る（→「テンプレートから作った後にやること」）。
 fork ではないため upstream 関係も残らず、**テンプレート側の更新は自動では降りてこない**。
 
 ### 2. 開発環境を用意する
 
-Node 24 を [mise](https://mise.jdx.dev/) で管理している（`mise.toml`）。生成したリポジトリを
-clone したら次を実行する。
+Node 24 を [mise](https://mise.jdx.dev/) で管理している（`mise.toml`）。
 
 ```sh
 mise trust        # clone 直後は mise.toml が未信頼なので最初に実行する
@@ -49,25 +45,25 @@ npm test          # vitest
 
 ## 技術スタック
 
-| 領域           | 採用                                    | 備考                                                           |
-| -------------- | --------------------------------------- | -------------------------------------------------------------- |
-| フレームワーク | React Router v7（framework mode / SSR） | SPA ではない。route は `app/routes.ts` に明示登録              |
-| UI             | React 19                                | 状態管理ライブラリは**使わない**（React 標準 + loader データ） |
-| スタイル       | Tailwind CSS v4 + daisyUI v5            | CSS-first 設定（`app/app.css`）。raw CSS 禁止                  |
-| アイコン       | unplugin-icons + Iconify（mingcute）    | `app/lib/iconify/registry.ts` が唯一の窓口                     |
-| テスト         | Vitest + Testing Library + user-event   | jsdom。`*.spec.{ts,tsx}` でコロケーション                      |
-| カタログ       | Storybook 9（react-vite）               | addon-docs / addon-a11y                                        |
-| Lint / Format  | oxlint + oxfmt                          | TS 形式の設定が正。カスタムプラグインでアーキ境界を強制        |
-| 未使用検出     | knip                                    |                                                                |
-| 雛形生成       | Hygen                                   | 抽象度3層のコンポーネント雛形                                  |
-| Git フック     | husky                                   | main への直コミット / 直 push を拒否                           |
-| Node 管理      | mise                                    | Node 24 固定                                                   |
-| CI             | GitHub Actions                          | typecheck → lint → format:check → test → build                 |
+| 領域           | 採用                                  | 備考                                                    |
+| -------------- | ------------------------------------- | ------------------------------------------------------- |
+| フレームワーク | React Router v7（framework mode）     |                                                         |
+| UI             | React 19                              | 状態管理ライブラリなし                                  |
+| スタイル       | Tailwind CSS v4 + daisyUI v5          | CSS-first 設定（`app/app.css`）。raw CSS 禁止           |
+| アイコン       | unplugin-icons + Iconify（mingcute）  | `app/lib/iconify/registry.ts` が唯一の窓口              |
+| テスト         | Vitest + Testing Library + user-event | jsdom。`*.spec.{ts,tsx}` でコロケーション               |
+| カタログ       | Storybook 9（react-vite）             | addon-docs / addon-a11y                                 |
+| Lint / Format  | oxlint + oxfmt                        | TS 形式の設定が正。カスタムプラグインでアーキ境界を強制 |
+| 未使用検出     | knip                                  |                                                         |
+| 雛形生成       | Hygen                                 | 抽象度3層のコンポーネント雛形                           |
+| Git フック     | husky                                 | main への直コミット / 直 push を拒否                    |
+| Node 管理      | mise                                  | Node 24 固定                                            |
+| CI             | GitHub Actions                        | typecheck → lint → format:check → test → build          |
 
 ## アーキテクチャ
 
 [bulletproof-react](https://github.com/alan2207/bulletproof-react) を React Router v7 に適応した構成。
-**規約の正は `.claude/rules/architecture.md`**（人も AI もこれを読む）。
+**規約の正は `.claude/rules/architecture.md`**。
 
 ```
 app/
@@ -121,7 +117,9 @@ npm run gen -- route --route dashboard --name UserCard
 
 ## テスト戦略
 
-**戦略の正は `.claude/rules/test.md`**。要点:
+**戦略の正は `.claude/rules/test.md`**。
+
+要点:
 
 - **TDD**: テスト先行 → RED → 最小実装 → GREEN → REFACTOR
 - ファイル名は `*.spec.{ts,tsx}`（`*.test.*` は lint で禁止）、テスト対象と**同じディレクトリ**に置く
@@ -229,13 +227,3 @@ npx skills add vercel-labs/agent-skills -s vercel-react-best-practices -a claude
 - 運用手順 → `docs/agents/`
 
 詳しくは `docs/README.md`。
-
-## 既知の割り切り
-
-- **テンプレート更新の取り込み口がない。** GitHub template は fork と違い upstream 関係を持たないため、
-  テンプレート側の改善を後から取り込むには手で差分を当てるしかない（代わりに履歴が汚れない）。
-- **loader / action の実装例が入っていない。** サンプル画面はローカル state のみ。
-  データ取得・更新を書くときは `react-router-framework-mode` スキルのドキュメントを読むこと。
-- **`app/testing/` が空。** 共通の render ヘルパーや API モック（msw 等）は必要になった時点で足す。
-- **品質ゲートが三重**（Claude の Stop フック → husky pre-commit → CI）。冗長だが、どの経路で
-  コードが入っても検査が漏れないようにしている。
