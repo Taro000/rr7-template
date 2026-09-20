@@ -67,12 +67,24 @@ npm test          # vitest
 
 ```
 app/
-├── assets      # 静的ファイル        ├── lib         # 外部ライブラリの腐敗防止層
-├── components  # 汎用 UI             ├── middleware  # RR v7 Middleware
-├── config      # グローバル設定      ├── routes      # RR v7 Route モジュール
-├── context     # RR v7 Context       ├── testing     # テストユーティリティ
-├── features    # 機能モジュール      ├── types       # 共通型
-├── hooks       # 汎用フック          └── utils       # 汎用ユーティリティ
+│  # ── 上流（依存の起点）
+├── routes/       # RR v7 Route モジュール（ページ・loader / action）
+├── features/     # 機能モジュール（api / components / hooks / types / utils）
+│
+│  # ── 共有層（features / routes を import しない）
+├── components/   # 汎用 UI
+├── hooks/        # 汎用フック
+├── lib/          # 外部ライブラリの腐敗防止層
+├── utils/        # 汎用ユーティリティ
+├── types/        # 共通型
+├── config/       # グローバル設定
+│
+│  # ── RR v7 の仕組み（React Router を import してよい）
+├── context/      # RR v7 Context
+├── middleware/   # RR v7 Middleware
+│
+├── testing/      # テストユーティリティ
+└── assets/       # 静的ファイル
 ```
 
 **依存方向は単方向**（lint で強制）:
